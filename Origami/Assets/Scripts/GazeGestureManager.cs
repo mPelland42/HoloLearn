@@ -8,7 +8,7 @@ public class GazeGestureManager : MonoBehaviour
 	// Represents the hologram that is currently being gazed at.
 	public GameObject FocusedObject { get; private set; }
 
-	GestureRecognizer recognizer;
+	public GestureRecognizer recognizer;
 
     // Use this for initialization
     void Start()
@@ -22,6 +22,18 @@ public class GazeGestureManager : MonoBehaviour
             // Send an OnSelect message to the focused object and its ancestors.
 			this.BroadcastMessage("OnSelect");
         };
+		recognizer.ManipulationStarted += (ManipulationStartedEventArgs obj) => {
+			this.BroadcastMessage("OnManipStart");
+		};
+		recognizer.ManipulationUpdated += (ManipulationUpdatedEventArgs obj) => {
+			this.BroadcastMessage("OnManipUpdate");
+			gameObject.GetComponent<SurfaceDrawer>().rotatingDelta = obj.cumulativeDelta.x;
+		};
+		recognizer.ManipulationCompleted += (ManipulationCompletedEventArgs obj) => {
+			this.BroadcastMessage("OnManipComplete");
+			gameObject.GetComponent<SurfaceDrawer>().rotateAngle += gameObject.GetComponent<SurfaceDrawer>().rotatingDelta;
+			gameObject.GetComponent<SurfaceDrawer>().rotatingDelta = 0;
+		};
         recognizer.StartCapturingGestures();
     }
 

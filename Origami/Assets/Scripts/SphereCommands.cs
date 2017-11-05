@@ -10,12 +10,17 @@ public class SphereCommands : MonoBehaviour
 		// Grab the original local position of the sphere when the app starts.
 		originalPosition = this.transform.localPosition;
 	}
+	void OnCenter(){
+		OnSelect ();
+	}
+
+
 
 	// Called by GazeGestureManager when the user performs a Select gesture
 	void OnSelect()
 	{
 		// If the sphere has no Rigidbody component, add one to enable physics.
-		gameObject.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width/2, Screen.height/2, Camera.main.nearClipPlane + 4));
+		gameObject.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width/2, Screen.height/2, Camera.main.nearClipPlane + 2));
 	}
 
 	void OnPause(){
