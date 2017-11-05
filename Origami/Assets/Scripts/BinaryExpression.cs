@@ -43,6 +43,9 @@ public class BinaryExpression {
 	}
 	public BinaryExpression(string s) {
 		s = s.Trim ();
+		if(!hasTopLevelParen(s)) {
+			s = s.Substring(s.IndexOf('(') + 1, s.LastIndexOf(')'));
+		}
 		if(s.Equals("x") || s.Equals("y")) {
 			operato = s.ToCharArray()[0];
 			return;
@@ -57,9 +60,7 @@ public class BinaryExpression {
 			opers.Add('-');
 
 
-			if(!hasTopLevelParen(s)) {
-				s = s.Substring(s.IndexOf('(') + 1, s.LastIndexOf(')'));
-			}
+
 			left = new BinaryExpression(s.Substring(0, splitPoint(s)));
 			right = new BinaryExpression(s.Substring(splitPoint(s) + 1));
 			operato = s.ToCharArray()[splitPoint(s)];

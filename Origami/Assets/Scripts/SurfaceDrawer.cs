@@ -32,6 +32,12 @@ public class SurfaceDrawer : MonoBehaviour {
 		}
 	}*/
     void Start() {
+		gameObject.AddComponent<MeshFilter> ();
+		gameObject.AddComponent<MeshRenderer> ();
+		//Mesh mesh = GetComponent<MeshFilter>().mesh;
+		//mesh.vertices = new Vector3[40 * 40];
+		//mesh.triangles = new int[39 * 39*2];
+		//mesh.Clear ();
 		text = GameObject.Find ("Text");
 		functionString = "x^2 - y^2";
 		rotating = false;
@@ -46,16 +52,29 @@ public class SurfaceDrawer : MonoBehaviour {
         //        pointArray[x + 20, y + 20].transform.localScale = new Vector3(0.05f * 0.5f, 0.05f * 0.5f, 0.05f * 0.5f);
         //    }
         //}
-        for (double x = -1 * 0.5f; x <= 1 * 0.5f; x += 0.05 * 0.5f)
+        for (double x = -1 * 0.5f; x < 1 * 0.5f; x += 0.05 * 0.5f)
         {
-            for (double y = -1 * 0.5f; y <= 1 * 0.5f; y += 0.05 * 0.5f)
+            for (double y = -1 * 0.5f; y < 1 * 0.5f; y += 0.05 * 0.5f)
             {
-                pointArray[(int)(x * 40 + 40 * 0.5f), (int)(y * 40 + 40 * 0.5f)] = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                pointArray[(int)(x * 40 + 40 * 0.5f), (int)(y * 40 + 40 * 0.5f)].transform.position = gameObject.transform.position + new Vector3((float)(x * Math.Cos(rotateAngle + rotatingDelta)) - (float)((y) * Math.Sin(rotateAngle + rotatingDelta)), (float)(function.evaluate(x, y)), (float)((y) * Math.Cos(rotateAngle + rotatingDelta)) + (float)(x * Math.Sin(rotateAngle + rotatingDelta)));
+				//Vector3 position = gameObject.transform.position + new Vector3 ((float)(x * Math.Cos (rotateAngle + rotatingDelta)) - (float)((y) * Math.Sin (rotateAngle + rotatingDelta)), (float)(function.evaluate (x, y)), (float)((y) * Math.Cos (rotateAngle + rotatingDelta)) + (float)(x * Math.Sin (rotateAngle + rotatingDelta)));
+				//mesh.vertices [(int)((x * 40 + 40 * 0.5f) * 40 + y * 40 + 40 * 0.5f)] = position;
+				pointArray[(int)(x * 40 + 40 * 0.5f), (int)(y * 40 + 40 * 0.5f)] = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+
+				pointArray[(int)(x * 40 + 40 * 0.5f), (int)(y * 40 + 40 * 0.5f)].transform.position = gameObject.transform.position + new Vector3((float)(x * Math.Cos(rotateAngle + rotatingDelta)) - (float)((y) * Math.Sin(rotateAngle + rotatingDelta)), (float)(function.evaluate(x, y)), (float)((y) * Math.Cos(rotateAngle + rotatingDelta)) + (float)(x * Math.Sin(rotateAngle + rotatingDelta)));
                 pointArray[(int)(x * 40 + 40 * 0.5f), (int)(y * 40 + 40 * 0.5f)].transform.localScale = new Vector3(0.05f * 0.5f, 0.05f * 0.5f, 0.05f * 0.5f);
 
             }
         }
+		/*for (int i = 0; i < 39; i++) {
+			for (int j = 0; j < 39; j++) {
+				mesh.triangles [(i * 39 + j) * 3 + 0] = i * 40 + j;
+				mesh.triangles [(i * 39 + j) * 3 + 1] = i * 40 + j+1;
+				mesh.triangles [(i * 39 + j) * 3 + 2] = (i+1) * 40 + j+1;
+				mesh.triangles [39*39 + (i * 39 + j) * 3 + 0] = i * 40 + j;
+				mesh.triangles [39*39 + (i * 39 + j) * 3 + 1] = (i+1) * 40 + j;
+				mesh.triangles [39*39 + (i * 39 + j) * 3 + 2] = (i+1) * 40 + j+1;
+			}
+		}*/
     }
 
     // Update is called once per frame
@@ -65,13 +84,16 @@ public class SurfaceDrawer : MonoBehaviour {
 		}
 		float deltaZ;
 		float newZ;
-        for (double x = -1 * 0.5f; x <= 1 * 0.5f; x += 0.05 * 0.5f)
+        for (double x = -1 * 0.5f; x < 1 * 0.5f; x += 0.05 * 0.5f)
         {
-            for (double y = -1 * 0.5f; y <= 1 * 0.5f; y += 0.05 * 0.5f)
+            for (double y = -1 * 0.5f; y < 1 * 0.5f; y += 0.05 * 0.5f)
             {
+				try{
 				pointArray[(int)(x * 40 + 40 * 0.5f), (int)(y * 40 + 40 * 0.5f)].transform.position = gameObject.transform.position + new Vector3((float)(x * Math.Cos(rotateAngle + rotatingDelta)) - (float)((y) * Math.Sin(rotateAngle + rotatingDelta)), (float)(function.evaluate(x, y)), (float)((y) * Math.Cos(rotateAngle + rotatingDelta)) + (float)(x * Math.Sin(rotateAngle + rotatingDelta)));
                 pointArray[(int)(x * 40 + 40 * 0.5f), (int)(y * 40 + 40 * 0.5f)].transform.localScale = new Vector3(0.05f * 0.5f, 0.05f * 0.5f, 0.05f * 0.5f);
-
+				}
+				catch(Exception e){
+				}
             }
         }
     }
@@ -82,6 +104,7 @@ public class SurfaceDrawer : MonoBehaviour {
     void OnStop() {
         rotating = false;
     }
+
 	void OnPlane(){
 		function = new BinaryExpression ("0");
 	}
@@ -103,102 +126,126 @@ public class SurfaceDrawer : MonoBehaviour {
 	}
 
 	void OnGraph(){
-        OnSaddle();
+        //OnSaddle();
 		makingNewFunction = true;
-		functionString = "";
-	}
+		functionString = "Z(x, y) = ";
+        text.GetComponent<Text>().text = functionString;
+    }
 	void OnGo(){
-        OnPlane();
+        //OnPlane();
 		makingNewFunction = false;
-		function = new BinaryExpression (functionString);
-
+		function = new BinaryExpression (functionString.Substring (10));
 	}
+	void OnDelete(){
+		functionString = functionString.Substring (0, functionString.Length - 2);
+        text.GetComponent<Text>().text = functionString;
+        function = new BinaryExpression(functionString.Substring(10));
+    }
 	void On0(){
 		functionString += "0";
 		text.GetComponent<Text> ().text = functionString;
-	}
+        function = new BinaryExpression(functionString.Substring(10));
+    }
 	void On1(){
 		functionString += "1";
 		text.GetComponent<Text> ().text = functionString;
-	}
+        function = new BinaryExpression(functionString.Substring(10));
+    }
 	void On2(){
 		functionString += "2";
-		text.GetComponent<Text> ().text = functionString;;
-	}
+		text.GetComponent<Text> ().text = functionString;
+        function = new BinaryExpression(functionString.Substring(10));
+    }
 	void On3(){
 		functionString += "3";
 		text.GetComponent<Text> ().text = functionString;
-	}
+        function = new BinaryExpression(functionString.Substring(10));
+    }
 	void On4(){
 		functionString += "4";
 		text.GetComponent<Text> ().text = functionString;
-	}
+        function = new BinaryExpression(functionString.Substring(10));
+    }
 	void On5(){
 		functionString += "5";
 		text.GetComponent<Text> ().text = functionString;
-	}
+        function = new BinaryExpression(functionString.Substring(10));
+    }
 	void On6(){
 		functionString += "6";
 		text.GetComponent<Text> ().text = functionString;
-	}
+        function = new BinaryExpression(functionString.Substring(10));
+    }
 	void On7(){
 		functionString += "7";
 		text.GetComponent<Text> ().text = functionString;
-	}
+        function = new BinaryExpression(functionString.Substring(10));
+    }
 	void On8(){
 		functionString += "8";
 		text.GetComponent<Text> ().text = functionString;
-	}
+        function = new BinaryExpression(functionString.Substring(10));
+    }
 	void On9(){
 		functionString += "9";
 		text.GetComponent<Text> ().text = functionString;
-	}
+        function = new BinaryExpression(functionString.Substring(10));
+    }
 	void OnX(){
-        OnParaboloid();
+       // OnParaboloid();
 		functionString += "x";
 		text.GetComponent<Text> ().text = functionString;
+        function = new BinaryExpression(functionString.Substring(10));
 
-	}
+    }
 	void OnY(){
 		functionString += "y";
 		text.GetComponent<Text> ().text = functionString;
+        function = new BinaryExpression(functionString.Substring(10));
 
-	}
+    }
 	void OnOpenParen(){
 		functionString += "(";
 		text.GetComponent<Text> ().text = functionString;
+        function = new BinaryExpression(functionString.Substring(10));
 
-	}
+    }
 	void OnCloseParen(){
 		functionString += ")";
 		text.GetComponent<Text> ().text = functionString;
+        function = new BinaryExpression(functionString.Substring(10));
 
-	}
+    }
 	void OnTimes(){
 		functionString += "*";
 		text.GetComponent<Text> ().text = functionString;
+        function = new BinaryExpression(functionString.Substring(10));
 
-	}
+    }
 	void OnDividedBy(){
 		functionString += "/";
 		text.GetComponent<Text> ().text = functionString;
+        function = new BinaryExpression(functionString.Substring(10));
 
-	}
+    }
 	void OnPlus(){
 		functionString += "+";
 		text.GetComponent<Text> ().text = functionString;
+        function = new BinaryExpression(functionString.Substring(10));
 
-	}
+    }
 	void OnMinus(){
 		functionString += "-";
 		text.GetComponent<Text> ().text = functionString;
+        function = new BinaryExpression(functionString.Substring(10));
 
-	}
+    }
 	void OnPower(){
 		functionString += "^";
 		text.GetComponent<Text> ().text = functionString;
+        function = new BinaryExpression(functionString.Substring(10));
 
-	}
+    }
 
 	public enum CoordinateType  {Cartesian, Cylindrical, Spherical};  
 	public delegate double MathFunction (double arga, double argb);

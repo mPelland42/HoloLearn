@@ -11,19 +11,21 @@ public class SpeechManager : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-		keywords.Add("Center", () =>
-			{
-				// Call the OnReset method on every descendant object.
+		keywords.Add("Center", () =>{
 				this.BroadcastMessage("OnCenter");
 			});
-
 		keywords.Add ("Rotate", () => {
 			this.BroadcastMessage("OnRotate");		
 		});
 		keywords.Add ("Stop", () => {
 			this.BroadcastMessage("OnStop");		
 		});
-
+		keywords.Add ("delete", () => {
+			this.BroadcastMessage("OnDelete");	
+		});
+		keywords.Add ("backspace", () => {
+			this.BroadcastMessage("OnDelete");	
+		});
 		keywords.Add ("plane", () => {
 			this.BroadcastMessage ("OnPlane");
 		});
@@ -39,9 +41,9 @@ public class SpeechManager : MonoBehaviour
 		keywords.Add("go", () =>{
 			this.BroadcastMessage("OnGo");
 		});
-
-
-
+		keywords.Add ("new", () => {
+			this.BroadcastMessage("OnNew");	
+		});
         keywords.Add("zero", () => {
             this.BroadcastMessage("On0");
         });
